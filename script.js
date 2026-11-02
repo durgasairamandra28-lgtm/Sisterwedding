@@ -1,69 +1,8 @@
-const weddingTarget = new Date("2027-03-25T05:15:00+05:30");
-
-function updateCountdown() {
-  const countdown = document.getElementById("countdown");
-  const note = document.getElementById("countdownNote");
-  if (!countdown || !note) return;
-
-  const remaining = weddingTarget.getTime() - Date.now();
-
-  if (remaining <= 0) {
-    countdown.innerHTML = '<div><b>♥</b><span>Today is the day!</span></div>';
-    note.textContent = "Wishing the couple a lifetime of happiness.";
-    return;
-  }
-
-  const units = [
-    ["Days", Math.floor(remaining / 86400000)],
-    ["Hours", Math.floor((remaining % 86400000) / 3600000)],
-    ["Minutes", Math.floor((remaining % 3600000) / 60000)],
-    ["Seconds", Math.floor((remaining % 60000) / 1000)]
-  ];
-
-  countdown.innerHTML = units.map(([label, value]) =>
-    `<div><b>${String(value).padStart(2, "0")}</b><span>${label}</span></div>`
-  ).join("");
-
-  note.textContent = "Until 25 March 2027 · 05:15 AM IST";
-}
-
-updateCountdown();
-setInterval(updateCountdown, 1000);
-
-const menuToggle = document.getElementById("menuToggle");
-const mainNav = document.getElementById("mainNav");
-
-if (menuToggle && mainNav) {
-  menuToggle.addEventListener("click", () => {
-    mainNav.classList.toggle("open");
-    menuToggle.textContent = mainNav.classList.contains("open") ? "×" : "☰";
-  });
-  mainNav.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", () => {
-      mainNav.classList.remove("open");
-      menuToggle.textContent = "☰";
-    });
-  });
-}
-
-const shareButton = document.getElementById("shareButton");
-if (shareButton) {
-  shareButton.addEventListener("click", async () => {
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: "Haripriya & Sai Aditya — Wedding Invitation",
-          text: "You're warmly invited!",
-          url: window.location.href
-        });
-      } else {
-        await navigator.clipboard.writeText(window.location.href);
-        alert("Invitation link copied!");
-      }
-    } catch (error) {
-      if (error.name !== "AbortError") {
-        prompt("Copy your invitation link:", window.location.href);
-      }
-    }
-  });
-}
+const WEDDING_DATE = new Date("2027-03-25T05:15:00+05:30").getTime();
+const countdown = document.getElementById("countdown");
+const note = document.getElementById("countdownNote");
+function updateCountdown(){const remaining=WEDDING_DATE-Date.now();if(remaining<=0){countdown.innerHTML='<div><strong>♥</strong><span>Today is the day!</span></div>';note.textContent='Wishing the couple a lifetime of love and happiness.';return;}const units=[["Days",Math.floor(remaining/86400000)],["Hours",Math.floor((remaining%86400000)/3600000)],["Minutes",Math.floor((remaining%3600000)/60000)],["Seconds",Math.floor((remaining%60000)/1000)]];countdown.innerHTML=units.map(([label,value])=>`<div><strong>${String(value).padStart(2,"0")}</strong><span>${label}</span></div>`).join("");}
+updateCountdown();setInterval(updateCountdown,1000);
+const menuToggle=document.getElementById("menuToggle"),mainNav=document.getElementById("mainNav");menuToggle.addEventListener("click",()=>{const open=mainNav.classList.toggle("open");menuToggle.setAttribute("aria-expanded",String(open));menuToggle.textContent=open?"×":"☰";});mainNav.querySelectorAll("a").forEach(link=>link.addEventListener("click",()=>{mainNav.classList.remove("open");menuToggle.setAttribute("aria-expanded","false");menuToggle.textContent="☰";}));
+const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("visible");observer.unobserve(entry.target);}}),{threshold:.12});document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
+document.getElementById("shareButton").addEventListener("click",async()=>{const data={title:"హరిప్రియ & సాయి ఆదిత్య — Wedding Invitation",text:"You're warmly invited to celebrate this beautiful beginning!",url:location.href};try{if(navigator.share)await navigator.share(data);else{await navigator.clipboard.writeText(location.href);alert("Invitation link copied!");}}catch(e){if(e.name!=="AbortError")prompt("Copy and share this invitation link:",location.href);}});
